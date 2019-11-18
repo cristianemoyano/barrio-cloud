@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Blog{% endblock %}
+{% block section %}Post{% endblock %}
+
+{% block content %}
+  
+   <h1>{{ post.title }}</h1> 
+   <p>{{ post.body }}</p>
+   <p>{{ post.rich_body | safe }}</p>  
+   <p>{{ post.author }}</p> 
+   <p>{{ post.posted }}</p>
+   
+   <a href="{{ post.category.get_absolute_url }}">{{ post.category.title }}</a>
+	
+	<p><a class="btn btn-lg btn-primary" href="{% url 'blog:blog-post-edit' post.slug %}">Edit</a></p>
+	
+
+{% endblock %}
+
+
+

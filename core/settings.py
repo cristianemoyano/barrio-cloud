@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,6 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # internal apps
     'accounts',
+    'blog',
+    # external apps
+    'tinymce',
 ]
 
 MIDDLEWARE = [
@@ -66,6 +71,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # internal
+                'core.context_processors.custom.breadcrumbs',
             ],
         },
     },
@@ -136,3 +143,14 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 # Emails
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+
+
+# links
+"""
+'app_name': [('1st Level name', 'url name'), ('2nd Level name', 'url name')],
+"""
+
+BREADCRUMBS_VIEWS = {
+    'blog': [(_('Blog'), 'blog-index'), (_('Posts'), 'blog-view-post')],
+    'accounts': [(_('Accounts'), ''), (_('Profile'), 'user-profile')],
+}

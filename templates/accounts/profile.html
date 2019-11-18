@@ -4,6 +4,11 @@
 {% block section %}Profile{% endblock %}
 
 {% block content %}
+
+<!-- Icon Cards-->
+
+        {% include "summary-cards.html" %}
+
   <h2>Profile</h2>
     
 	{% if user.is_superuser %}
@@ -14,7 +19,7 @@
 {% endif %}
 
 
-    <li><a href="{% url 'user-profile' %}">Profile</a></li>
-    <li><a href="{% url 'logout' %}">Logout</a>
+    <li><a href="{% url 'accounts:user-profile' %}">Profile</a></li>
+    <li><a href="{% url 'accounts:logout' %}">Logout</a>
 
 {% endblock %}
