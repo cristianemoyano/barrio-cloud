@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+{% block section %}Profile{% endblock %}
+
+{% block content %}
+  <h2>Profile</h2>
+    
+	{% if user.is_superuser %}
+    <p>Hello, admin: {{ user }}</p>
+    <li><a href="{% url 'admin:index' %}">Admin</a></li>
+{% else %}
+    <p>Hello, visitor: {{ user }}</p>
+{% endif %}
+
+
+    <li><a href="{% url 'user-profile' %}">Profile</a></li>
+    <li><a href="{% url 'logout' %}">Logout</a>
+
+{% endblock %}
