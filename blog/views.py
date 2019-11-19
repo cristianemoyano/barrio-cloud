@@ -1,4 +1,4 @@
-from django.views.generic.base import TemplateView
+from django.views.generic.list import ListView
 from django.views.generic.edit import UpdateView
 from django.http import Http404
 from django.shortcuts import render
@@ -7,13 +7,15 @@ from blog.models import Blog, Category
 from django.views.generic.edit import CreateView
 
 
-class BlogView(TemplateView):
+class BlogView(ListView):
 
     template_name = 'blog/index.html'
+    model = Blog
+    paginate_by = 3  # if pagination is desired
+    context_object_name = 'posts'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['posts'] = Blog.objects.all()[:5]
         context['categories'] = Category.objects.all()
         return context
 
@@ -43,9 +45,9 @@ def view_category(request, slug):
 
 class PostCreateView(CreateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category']
+    fields = ['title', 'rich_body', 'author', 'category', 'image_url']
 
 
 class PostUpdateView(UpdateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category']
+    fields = ['title', 'rich_body', 'author', 'category', 'image_url']

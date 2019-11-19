@@ -34,11 +34,12 @@ class Category(TimestampleModel):
 
 
 class Blog(TimestampleModel):
-    title = models.CharField(max_length=250, unique=True)
-    slug = models.SlugField(max_length=250, unique=True)
-    body = models.TextField()
+    title = models.CharField(max_length=250)
+    slug = models.SlugField(max_length=250)
+    summary = models.CharField(max_length=100)
     rich_body = HTMLField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    image_url = models.CharField(max_length=250)
     posted = models.DateField(db_index=True, auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 

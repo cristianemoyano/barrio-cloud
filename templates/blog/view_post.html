@@ -6,6 +6,7 @@
 {% block content %}
   
    <h1>{{ post.title }}</h1> 
+   <img class="card-img-top"  width="300px" height="300px" src="{{ post.image_url }}" alt={{ post.title }}>
    <p>{{ post.body }}</p>
    <p>{{ post.rich_body | safe }}</p>  
    <p>{{ post.author }}</p> 
