@@ -33,6 +33,24 @@ class Category(TimestampleModel):
         ordering = ['title']
 
 
+class Group(TimestampleModel):
+    title = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, db_index=True)
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return reverse('blog:blog-view-group', args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Group, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['title']
+
+
 class Blog(TimestampleModel):
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250)
@@ -42,6 +60,7 @@ class Blog(TimestampleModel):
     image_url = models.CharField(max_length=250)
     posted = models.DateField(db_index=True, auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    groups = models.ManyToManyField(Group)
 
     def __str__(self):
         return self.title
@@ -54,4 +73,4 @@ class Blog(TimestampleModel):
         super(Blog, self).save(*args, **kwargs)
 
     class Meta:
-        ordering = ['posted']
+        ordering = ['-posted']

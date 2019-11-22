@@ -4,18 +4,34 @@
 {% block section %}Post{% endblock %}
 
 {% block content %}
-  
-   <h1>{{ post.title }}</h1> 
-   <img class="card-img-top"  width="300px" height="300px" src="{{ post.image_url }}" alt={{ post.title }}>
-   <p>{{ post.body }}</p>
-   <p>{{ post.rich_body | safe }}</p>  
-   <p>{{ post.author }}</p> 
-   <p>{{ post.posted }}</p>
-   
-   <a href="{{ post.category.get_absolute_url }}">{{ post.category.title }}</a>
+
+<div class="col-md-4">
+	<div class="post post-sm">
+	<a class="post-img" href="{{ post.get_absolute_url }}"><img src="{ post.image_url }}" alt=""></a>
+	<div class="post-body">
+		<div class="post-category">
+			<a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a>
+		</div>
+		<h1 class=""><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
+		<ul class="post-meta">
+			<li><a href="author.html">{{ post.author }}</a></li>
+			<li>{{ post.posted }}</li>
+			<li><a class="btn btn-sm btn-primary" style="color: white;" href="{% url 'blog:blog-post-edit' post.slug %}">Edit</a></li>
+			<li><a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'blog:blog-post-delete' post.slug %}">Delete</a></li>
+		</ul>
+	</div>
+	</div>
+</div>
+
+   <img class="card-img-top"  style="max-width:50%;height:auto;" src="{{ post.image_url }}" alt={{ post.title }}>
+   <p class="display-2">{{ post.body }}</p>
+   <p class="display-2">{{ post.rich_body | safe }}</p>  
 	
-	<p><a class="btn btn-lg btn-primary" href="{% url 'blog:blog-post-edit' post.slug %}">Edit</a></p>
 	
+	
+
+
+
 
 {% endblock %}
 

@@ -1,19 +1,103 @@
 {% extends 'base.html' %}
-
+{% load i18n %} 
 {% block title %}Blog{% endblock %}
 {% block section %}Category{% endblock %}
 
 {% block content %}
     
-   {% if posts %}
-       <ul>
-       {% for post in posts %}
-           <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
-       {% endfor %}
-       </ul>
-   {% else %}
-       <p>There are no posts.</p>
-   {% endif %}
+
+{% trans "Novedades en: " as post_title %}
+{% trans "No hay posts." as no_posts_message %}
+
+{% trans "Categoria" as category_title %}
+
+
+<div id="nav-top">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 justify-content-center mb-3">
+
+
+        <div class="row">
+
+          <!-- TITLE RECENT POSTS -->
+          <div class="col-md-12">
+            <div class="section-title">
+              <h2 class="title">{{ post_title }}{{ category }}</h2>
+            </div>
+          </div>
+          <!-- END TITLE RECENT POSTS -->
+
+          {% if posts %}  
+          {% for post in posts %}    
+          <!-- POST -->
+          <div class="col-md-6 ">
+            <div class="post">
+              {% if post.image_url %}
+              <a class="post-img" href="{{ post.get_absolute_url }}"><img src="{{ post.image_url }}" alt="{{ post.title }}"></a>
+              {% else %}
+              <a class="post-img" href="{{ post.get_absolute_url }}"><img src="{{ image_default }}" alt="{{ post.title }}"></a>
+              {% endif %}
+              <div class="post-body">
+                <div class="post-category">
+                	{% for group in post.groups.all %} 
+                    <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+                  {% endfor %}
+                  
+                </div>
+                <h3 class="post-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                  <ul class="post-meta">
+                  <li><a href="#">{{ post.author }}</a></li>
+                  <li>{{ post.posted }}</li>
+                  <li><a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <!-- END POST -->
+          {% else %}
+          <p>{{ no_posts_message }}</p>
+          {% endif %}
+
+          <div class="clearfix visible-md visible-lg"></div>
+
+        </div>
+        
+
+              <!-- Pagination -->
+        <div class="d-flex justify-content-center mb-3">
+            {% if is_paginated %}
+            <nav>
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                  <li class="page-item"><a class="page-link"  href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link" >&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                  {% if page_obj.number == i %}
+                    <li class="page-item active"><span class="page-link" >{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link"  href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                  <li class="page-item"><a class="page-link"  href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link" >&raquo;</span></li>
+                {% endif %}
+              </ul>
+            </nav>
+          {% endif %}
+        </div>
+         <!-- Pagination -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 {% endblock %}
