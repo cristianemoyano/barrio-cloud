@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     # internal apps
     'accounts',
     'blog',
+    'members',
     # external apps
     'tinymce',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -153,4 +155,5 @@ EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 BREADCRUMBS_VIEWS = {
     'blog': [(_('Blog'), 'blog-index'), (_('Posts'), 'blog-view-post')],
     'accounts': [(_('Accounts'), ''), (_('Profile'), 'user-profile')],
+    'members': [(_('Members'), 'members-index')],
 }

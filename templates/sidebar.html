@@ -1,22 +1,22 @@
 
     <ul class="sidebar navbar-nav">
-      <li class="nav-item">
+      <li class="nav-item {% if request.resolver_match.app_name == 'blog' %}active{% endif %}">
         <a class="nav-link" href="{% url 'blog:blog-index' %}">
           <i class="fas fa-fw fa-newspaper"></i>
           <span>Novedades</span></a>
       </li>
-      <li class="nav-item active">
+      <li class="nav-item {% if request.resolver_match.app_name == 'account' %}active{% endif %}">
         <a class="nav-link" href="{% url 'blog:blog-index' %}">
           <i class="fas fa-fw fa-user"></i>
           <span>Mi cuenta</span>
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'blog:blog-index' %}">
+      <li class="nav-item {% if request.resolver_match.app_name == 'members' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'members:members-index' %}">
           <i class="fas fa-fw fa-users"></i>
           <span>Socios</span></a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item {% if request.resolver_match.app_name == 'cash' %}active{% endif %}">
         <a class="nav-link" href="{% url 'blog:blog-index' %}">
           <i class="fas fa-fw fa-cash-register"></i>
           <span>Caja</span></a>

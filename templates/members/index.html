@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load i18n %} 
+{% block title %}Members{% endblock %}
+{% block section %}Members{% endblock %}
+
+{% block content %}
+
+
+{% trans "No se encontró a ningún socio." as no_members_message %}
+{% trans "Buscar.." as search_msg %}
+
+<form method='GET'>
+  <div class="input-group">
+    <input id="search-members" type="text" class="form-control" placeholder="{{ search_msg }}" name='q' value='{{ request.GET.q }}'>
+    <div class="input-group-append">
+      <button class="btn btn-secondary" type="button" type='submit'>
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+  </div>
+</form>
+
+<br>
+
+  {% if members %} 
+<div class="row">
+  
+  {% for member in members %}
+  <div class="col-md-4">
+    <div class="card text-center" style="width: 17rem;">
+      <img class="card-img-top" src="http://otca.info/gef/dist/images/no-image.png" alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title"><a href="{% url 'accounts:user-account' member.id %}"> {{ member.first_name }} {{ member.last_name }}</a></h5>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+      <p>{{ no_members_message }}</p>
+  {% endif %}
+
+</div>
+
+<script>
+  document.getElementById("search-members").focus();
+</script>
+
+{% endblock %}
+
+
+

@@ -16,8 +16,10 @@
 		<ul class="post-meta">
 			<li><a href="author.html">{{ post.author }}</a></li>
 			<li>{{ post.posted }}</li>
+			{% if request.user.is_staff %}
 			<li><a class="btn btn-sm btn-primary" style="color: white;" href="{% url 'blog:blog-post-edit' post.slug %}">Edit</a></li>
 			<li><a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'blog:blog-post-delete' post.slug %}">Delete</a></li>
+			{% endif %}
 		</ul>
 	</div>
 	</div>

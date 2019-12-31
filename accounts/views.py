@@ -13,3 +13,12 @@ def profile(request):
     except User.DoesNotExist:
         raise Http404("User does not exist")
     return render(request, 'accounts/profile.html', {'user': user})
+
+
+@login_required
+def account(request, pk):
+    try:
+        user = User.objects.get(pk=pk)
+    except User.DoesNotExist:
+        raise Http404("User does not exist")
+    return render(request, 'accounts/profile.html', {'user': user})

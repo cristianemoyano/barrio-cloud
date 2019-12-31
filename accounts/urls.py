@@ -6,4 +6,5 @@ app_name = 'accounts'
 urlpatterns = [
     path('', include('django.contrib.auth.urls')),
     path('profile/', accounts_views.profile, name='user-profile'),
+    path('detail/<int:pk>/', accounts_views.account, name='user-account'),
 ]
