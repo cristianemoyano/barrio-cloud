@@ -57,7 +57,7 @@ class Blog(TimestampleModel):
     summary = models.CharField(max_length=100)
     rich_body = HTMLField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    image_url = models.CharField(max_length=250)
+    image_url = models.CharField(max_length=250, blank=True, null=True)
     posted = models.DateField(db_index=True, auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     groups = models.ManyToManyField(Group)

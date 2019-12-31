@@ -46,18 +46,8 @@
         {{ form.title|add_class:'form-control' }}
         </h2>
 
-        <p class="blog-post-meta">
-          {{ form.author.label_tag }}
-          <span class="text-danger">{{ form.author.errors }}</span>
-          {{ form.author|add_class:'form-control' }}
-        </p>
-
         <span class="text-danger">{{ form.rich_body.errors }}</span>
         {{ form.rich_body }}
-
-        {{ form.image_url.label_tag }}
-        <span class="text-danger">{{ form.image_url.errors }}</span>
-        {{ form.image_url|add_class:'form-control' }}
 
         {{ form.groups.label_tag }}
         <span class="text-danger">{{ form.groups.errors }}</span>

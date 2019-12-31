@@ -92,13 +92,27 @@ def view_group(request, slug):
 @method_decorator(staff_member_required, name='dispatch')
 class PostCreateView(CreateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url', 'is_published']
+    fields = ['title', 'rich_body', 'category', 'groups', 'is_published']
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
+        response = super(PostCreateView, self).form_valid(form)
+        return response
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class PostUpdateView(UpdateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url', 'is_published']
+    fields = ['title', 'rich_body', 'category', 'groups', 'is_published']
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user
+        post.save()
+        response = super(PostUpdateView, self).form_valid(form)
+        return response
 
 
 @method_decorator(staff_member_required, name='dispatch')
