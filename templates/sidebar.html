@@ -5,8 +5,8 @@
           <i class="fas fa-fw fa-newspaper"></i>
           <span>Novedades</span></a>
       </li>
-      <li class="nav-item {% if request.resolver_match.app_name == 'account' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'blog:blog-index' %}">
+      <li class="nav-item {% if request.resolver_match.app_name == 'accounts' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'accounts:user-profile' %}">
           <i class="fas fa-fw fa-user"></i>
           <span>Mi cuenta</span>
         </a>
