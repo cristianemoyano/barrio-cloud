@@ -61,6 +61,7 @@ class Blog(TimestampleModel):
     posted = models.DateField(db_index=True, auto_now_add=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     groups = models.ManyToManyField(Group)
+    is_published = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title

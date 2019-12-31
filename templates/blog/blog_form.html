@@ -67,6 +67,12 @@
         <span class="text-danger">{{ form.category.errors }}</span>
         {{ form.category|add_class:'form-control' }}
 
+        <div class="form-check">
+          <span class="text-danger">{{ form.is_published.errors }}</span>
+          {{ form.is_published|add_class:'form-check-input' }}
+          {{ form.is_published.label_tag }}
+        </div>
+
     </div>
     <p>
       <br>

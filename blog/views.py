@@ -6,7 +6,7 @@ from django.http import Http404
 from django.shortcuts import render
 from blog.models import Blog, Category, Group
 
-from django.db.models import Count
+from django.db.models import Q, Count
 
 from django.views.generic.edit import CreateView
 
@@ -28,12 +28,24 @@ class BlogView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['categories'] = Category.objects.all().annotate(posts_count=Count('blog'))
-        context['groups'] = Group.objects.all().annotate(posts_count=Count('blog'))
+        context['categories'] = Category.objects.all().annotate(
+            posts_count=Count('blog', filter=Q(blog__is_published=True)),
+        )
+        context['groups'] = Group.objects.all().annotate(
+            posts_count=Count('blog', filter=Q(blog__is_published=True)),
+        )
+        context['posts_draft_count'] = len(Blog.objects.filter(is_published=False))
         context['image_default'] = (
             'https://www.gumtree.com/static/1/resources/assets/rwd/images/orphans/a37b37d99e7cef805f354d47.noimage_thumbnail.png'
         )
         return context
+
+    def get_queryset(self):
+        query = self.request.GET.get('draft')
+        result = Blog.objects.filter(is_published=True)
+        if query == '1' and self.request.user.is_staff:
+            result = Blog.objects.filter(is_published=False)
+        return result
 
 
 @login_required
@@ -56,7 +68,7 @@ def view_category(request, slug):
         'blog/view_category.html',
         {
             'category': category,
-            'posts': Blog.objects.filter(category=category)[:5],
+            'posts': Blog.objects.filter(category=category, is_published=True)[:5],
         }
     )
 
@@ -72,7 +84,7 @@ def view_group(request, slug):
         'blog/view_group.html',
         {
             'group': group,
-            'posts': Blog.objects.filter(groups=group)[:5],
+            'posts': Blog.objects.filter(groups=group, is_published=True)[:5],
         }
     )
 
@@ -80,13 +92,13 @@ def view_group(request, slug):
 @method_decorator(staff_member_required, name='dispatch')
 class PostCreateView(CreateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url']
+    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url', 'is_published']
 
 
 @method_decorator(staff_member_required, name='dispatch')
 class PostUpdateView(UpdateView):
     model = Blog
-    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url']
+    fields = ['title', 'rich_body', 'author', 'category', 'groups', 'image_url', 'is_published']
 
 
 @method_decorator(staff_member_required, name='dispatch')
