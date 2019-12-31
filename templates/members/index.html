@@ -27,7 +27,7 @@
   
   {% for member in members %}
   <div class="col-md-4">
-    <div class="card text-center" style="width: 17rem;">
+    <div class="card text-center" style="width: 14rem;">
       <img class="card-img-top" src="http://otca.info/gef/dist/images/no-image.png" alt="Card image cap">
       <div class="card-body">
         <h5 class="card-title"><a href="{% url 'accounts:user-account' member.id %}"> {{ member.first_name }} {{ member.last_name }}</a></h5>
