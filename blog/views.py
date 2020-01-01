@@ -90,6 +90,7 @@ def view_group(request, slug):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class PostCreateView(CreateView):
     model = Blog
     fields = ['title', 'rich_body', 'category', 'groups', 'is_published']
@@ -103,6 +104,7 @@ class PostCreateView(CreateView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class PostUpdateView(UpdateView):
     model = Blog
     fields = ['title', 'rich_body', 'category', 'groups', 'is_published']
@@ -116,6 +118,7 @@ class PostUpdateView(UpdateView):
 
 
 @method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
 class PostDeleteView(DeleteView):
     model = Blog
     success_url = reverse_lazy('blog:blog-index')

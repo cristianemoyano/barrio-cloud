@@ -43,14 +43,18 @@ INSTALLED_APPS = [
     'accounts',
     'blog',
     'members',
+    'cash',
     # external apps
     'tinymce',
     'widget_tweaks',
+    'djmoney',
+    'tz_detect',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'tz_detect.middleware.TimezoneMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -116,7 +120,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-es'
 
 TIME_ZONE = 'UTC'
 
@@ -125,6 +129,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+DATETIME_FORMAT = 'l d/m/Y H:m'
 
 
 # Static files (CSS, JavaScript, Images)
@@ -156,4 +162,5 @@ BREADCRUMBS_VIEWS = {
     'blog': [(_('Blog'), 'blog-index'), (_('Posts'), 'blog-view-post')],
     'accounts': [(_('Accounts'), ''), (_('Profile'), 'user-profile')],
     'members': [(_('Members'), 'members-index')],
+    'cash': [(_('Cash'), 'cash-index')],
 }

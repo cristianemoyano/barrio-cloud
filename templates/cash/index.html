@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %} 
+{% load djmoney %}
+
+{% block title %}Cash{% endblock %}
+{% block section %}Cash{% endblock %}
+
+{% block content %}
+
+{% trans "Caja" as cash_title %}
+{% trans "No hay entradas." as no_entries_message %}
+
+<div class="jumbotron p-4 p-md-5 rounded">
+    <h1 class="font-italic text-center">{{ cash_title }}</h1>
+</div>
+
+
+<main role="main">
+  <div class="row">
+
+  
+    <div class="col-md-12 blog-main">
+      {% if entries %}
+
+          <table class="table table-striped">
+          <thead>
+            <tr>
+              <th style="width: 15%">Date</th>
+              <th style="width: 35%">Detail</th>
+              <th style="width: 15%">Amount</th>
+              <th style="width: 15%">Balance</th>
+              {% if request.user.is_staff %}
+              <th style="width: 5%">Actions</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+        {% for entry in entries %}    
+            <tr>
+              <td>{{ entry.created_date }}</td>
+              <td><a href="{{ entry.get_absolute_url }}"> {{ entry.detail }}</a></td>
+              <td>{{ entry.amount }}</td>
+              <td>{{ entry.balance }}</td>
+              {% if request.user.is_staff %}
+              <td><a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'cash:cash-entry-revert' entry.slug %}">Revert</a></td>
+              {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+      <!-- END POST -->
+      {% else %}
+          <p>{{ no_entries_message }}</p>
+      {% endif %}
+    
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mb-3">
+            {% if is_paginated %}
+            <nav>
+              <ul class="pagination">
+                {% if page_obj.has_previous %}
+                  <li class="page-item"><a class="page-link"  href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link" >&laquo;</span></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                  {% if page_obj.number == i %}
+                    <li class="page-item active"><span class="page-link" >{{ i }} <span class="sr-only">(current)</span></span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link"  href="?page={{ i }}">{{ i }}</a></li>
+                  {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                  <li class="page-item"><a class="page-link"  href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% else %}
+                  <li class="page-item disabled"><span class="page-link" >&raquo;</span></li>
+                {% endif %}
+              </ul>
+            </nav>
+          {% endif %}
+        </div>
+         <!-- Pagination -->
+
+    </div><!-- /.blog-main -->
+
+  </div><!-- /.row -->
+
+</main>
+
+
+{% endblock %}
+
+
+

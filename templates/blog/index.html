@@ -30,35 +30,6 @@
     <div class="col-md-8 blog-main">
           
 
-      {% if posts %} 
-
-        {% for post in posts %}    
-        <hr>
-        <div class="blog-post">
-          <div class="post-body">
-            <div class="post-category">
-              {% for group in post.groups.all %} 
-                <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
-              {% endfor %}
-            </div>
-            <h1 class="post-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h1>
-            <ul class="post-meta">
-              <li><a href="#">{{ post.author }}</a></li>
-              <li>{{ post.posted }}</li>
-              <li><a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></li>
-            </ul>
-          </div>
-
-          <p class="display-2">{{ post.rich_body | safe }}</p> 
-
-        </div><!-- /.blog-post -->
-        {% endfor %}
-      <!-- END POST -->
-      {% else %}
-          <p>{{ no_posts_message }}</p>
-      {% endif %}
-        
-
         <!-- Pagination -->
         <div class="d-flex justify-content-center mb-3">
             {% if is_paginated %}

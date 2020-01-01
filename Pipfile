@@ -10,6 +10,10 @@ ipdb = "*"
 django = "~=2.2.4"
 django-tinymce = "*"
 django-widget-tweaks = "*"
+django-money = "*"
+pytz = "*"
+tzlocal = "*"
+django-tz-detect = "*"
 
 [requires]
 python_version = "3.7"
