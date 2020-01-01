@@ -36,13 +36,14 @@ def get_new_balance(new_amount, currency):
 class EntryListView(ListView):
     template_name = 'cash/index.html'
     model = Entry
-    paginate_by = 100  # if pagination is desired
+    paginate_by = 50  # if pagination is desired
     context_object_name = 'entries'
     ordering = ['-created_date']
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['user_time_zone'] = get_localzone()
+        context['balance'] = get_new_balance(0, 'ARS')
         return context
 
 
@@ -59,7 +60,7 @@ def entry_detail_view(request, slug):
 @method_decorator(login_required, name='dispatch')
 class EntryCreate(CreateView):
     model = Entry
-    fields = ['detail', 'amount']
+    fields = ['detail', 'amount', 'entry_type', 'attached_file_url', 'notes']
 
     def form_valid(self, form):
         entry = form.save(commit=False)

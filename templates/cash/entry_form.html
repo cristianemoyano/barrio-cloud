@@ -40,6 +40,12 @@
     <div class="col-md-12 blog-main">
 
       <div class="blog-post">
+        {{ form.entry_type.label_tag }}
+        <span class="text-danger">{{ form.entry_type.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.entry_type}}
+        </h2>
+
         {{ form.detail.label_tag }}
         <span class="text-danger">{{ form.detail.errors }} </span>
         <h2 class="blog-post-title">    
@@ -51,6 +57,20 @@
         <h2 class="blog-post-title">    
         {{ form.amount}}
         </h2>
+
+        {{ form.notes.label_tag }}
+        <span class="text-danger">{{ form.notes.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.notes}}
+        </h2>
+
+        {{ form.attached_file_url.label_tag }}
+        <span class="text-danger">{{ form.attached_file_url.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.attached_file_url}}
+        </h2>
+
+
 
 
     </div>
@@ -65,12 +85,13 @@
 
 <style>
   .tox-tinymce {
-    height: 800px !important;
+    height: 200px !important;
   }
   .tox-notification {
     visibility: hidden !important;
   }
 </style>
+
 
 
 {% endblock %}

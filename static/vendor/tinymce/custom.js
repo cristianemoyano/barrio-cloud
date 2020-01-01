@@ -1,4 +1,4 @@
 tinymce.init({
-	selector:'textarea',
+	selector:'.editor',
 	height : "800px",
 })
