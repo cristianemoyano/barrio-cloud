@@ -1,5 +1,5 @@
 from django.contrib import admin
-from cash.models import Entry, EntryType
+from cash.models import Entry, EntryType, UserEntry
 
 
 class EntryAdmin(admin.ModelAdmin):
@@ -10,5 +10,10 @@ class EntryTypeAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
 
+class UserEntryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('detail',)}
+
+
 admin.site.register(Entry, EntryAdmin)
 admin.site.register(EntryType, EntryTypeAdmin)
+admin.site.register(UserEntry, UserEntryAdmin)

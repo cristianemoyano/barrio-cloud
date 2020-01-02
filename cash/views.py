@@ -1,7 +1,8 @@
 from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
 
-from cash.models import Entry
+from cash.models import Entry, UserEntry
 from cash.forms import RevertEntryForm
 
 from django.views.generic.edit import CreateView
@@ -16,7 +17,6 @@ from django.shortcuts import render
 from django.utils.decorators import method_decorator
 
 from djmoney.money import Money
-from tzlocal import get_localzone
 
 
 def get_new_balance(new_amount, currency):
@@ -42,7 +42,6 @@ class EntryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user_time_zone'] = get_localzone()
         context['balance'] = get_new_balance(0, 'ARS')
         return context
 
@@ -103,3 +102,101 @@ class RevertEntryView(View):
             )
             reverted_entry.save()
             return HttpResponseRedirect(reverse_lazy('cash:cash-index'))
+
+
+def get_new_user_balance(new_amount, currency, target_user_id):
+    try:
+        latest = UserEntry.objects.filter(target_user=target_user_id).latest('created_date')
+    except UserEntry.DoesNotExist:
+        latest = None
+    balance = Money(0, currency)
+    if latest:
+        balance += latest.balance + new_amount
+    else:
+        balance += new_amount
+    return balance
+
+
+@method_decorator(login_required, name='dispatch')
+class UserEntryListView(ListView):
+    template_name = 'cash/user_index.html'
+    model = UserEntry
+    paginate_by = 50  # if pagination is desired
+    context_object_name = 'entries'
+    ordering = ['-created_date']
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['balance'] = get_new_user_balance(0, 'ARS', self.kwargs.get('user_target_id'))
+        context['member'] = User.objects.get(pk=self.kwargs.get('user_target_id'))
+        return context
+
+    def get_queryset(self):
+        queryset = super(UserEntryListView, self).get_queryset()
+        use_target_id = self.kwargs.get('use_target_id')
+        if use_target_id:
+            queryset = queryset.filter(target_user=use_target_id)
+        return queryset
+
+
+@login_required
+def user_entry_detail_view(request, slug):
+    try:
+        p = UserEntry.objects.get(slug=slug)
+    except UserEntry.DoesNotExist:
+        raise Http404("Entry does not exist")
+    return render(request, 'cash/view_user_entry.html', {'entry': p})
+
+
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class UserEntryCreate(CreateView):
+    model = UserEntry
+    fields = ['detail', 'amount', 'entry_type', 'attached_file_url', 'notes']
+
+    def form_valid(self, form):
+        user_entry = form.save(commit=False)
+        user_entry.target_user = User.objects.get(pk=self.kwargs.get('user_target_id'))
+        user_entry.user = self.request.user
+        user_entry.balance = get_new_user_balance(
+            user_entry.amount,
+            user_entry.amount.currency,
+            self.kwargs.get('user_target_id'),
+        )
+        user_entry.save()
+        response = super(UserEntryCreate, self).form_valid(form)
+        return response
+
+
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class RevertUserEntryView(View):
+    form_class = RevertEntryForm
+    template_name = 'cash/revert_user_entry.html',
+
+    def get(self, request, slug):
+        form = self.form_class()
+        try:
+            entry = UserEntry.objects.get(slug=slug)
+        except UserEntry.DoesNotExist:
+            raise Http404("Entry does not exist")
+        return render(request, self.template_name, {'entry': entry, 'form': form})
+
+    def post(self, request, slug):
+        form = self.form_class(request.POST)
+        try:
+            entry_to_revert = UserEntry.objects.get(slug=slug)
+        except UserEntry.DoesNotExist:
+            raise Http404("Entry does not exist")
+        if form.is_valid():
+            detail = 'reverted-({})'.format(entry_to_revert.detail)
+            reverted_amount = entry_to_revert.amount * (-1)
+            balance = get_new_user_balance(reverted_amount, entry_to_revert.amount.currency)
+            reverted_entry = UserEntry.objects.create(
+                detail=detail,
+                amount=reverted_amount,
+                balance=balance,
+                user=self.request.user,
+            )
+            reverted_entry.save()
+            return HttpResponseRedirect(reverse_lazy('cash:cash-user-index'))

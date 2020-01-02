@@ -55,3 +55,28 @@ class Entry(TimestampleModel):
 
     class Meta:
         ordering = ['-created_date']
+
+
+class UserEntry(TimestampleModel):
+    detail = models.CharField(max_length=250)
+    amount = MoneyField(max_digits=19, decimal_places=2, default_currency='ARS')
+    balance = MoneyField(max_digits=19, decimal_places=2, default_currency='ARS')
+    notes = HTMLField(blank=True, null=True)
+    attached_file_url = models.CharField(max_length=250, blank=True, null=True)
+    slug = models.SlugField(max_length=250)
+    entry_type = models.ForeignKey(EntryType, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='session_user')
+    target_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='target_user')
+
+    def __str__(self):
+        return self.detail
+
+    def get_absolute_url(self):
+        return reverse('cash:cash-view-user-entry', args=[self.slug])
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.detail)
+        super(UserEntry, self).save(*args, **kwargs)
+
+    class Meta:
+        ordering = ['-created_date']
