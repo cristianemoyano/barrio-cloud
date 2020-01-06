@@ -16,6 +16,16 @@
     <h1 class="font-italic text-center">Saldo total: {{ balance }}</h1>
 </div>
 
+{% if request.user.is_staff %}      
+<div class="p-4">
+  <a class="btn btn-success" href="{% url 'cash:cash-user-entry-new-payment' user.id %}" role="button">
+    Ingresar Pago
+  </a>
+  <a class="btn btn-secondary" href="{% url 'cash:cash-user-entry-new-debt' user.id %}" role="button">
+    Ingresar Gasto
+  </a>
+</div>
+{% endif %}
 
 <main role="main">
   <div class="row">

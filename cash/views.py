@@ -2,7 +2,7 @@ from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
 
-from cash.models import Entry, UserEntry
+from cash.models import Entry, UserEntry, EntryType
 from cash.forms import RevertEntryForm
 
 from django.views.generic.edit import CreateView
@@ -99,6 +99,7 @@ class RevertEntryView(View):
                 amount=reverted_amount,
                 balance=balance,
                 user=self.request.user,
+                entry_type=entry_to_revert.entry_type,
             )
             reverted_entry.save()
             return HttpResponseRedirect(reverse_lazy('cash:cash-index'))
@@ -150,21 +151,45 @@ def user_entry_detail_view(request, slug):
 
 @method_decorator(staff_member_required, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-class UserEntryCreate(CreateView):
+class UserEntryCreateDebt(CreateView):
     model = UserEntry
-    fields = ['detail', 'amount', 'entry_type', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'attached_file_url', 'notes']
 
     def form_valid(self, form):
         user_entry = form.save(commit=False)
         user_entry.target_user = User.objects.get(pk=self.kwargs.get('user_target_id'))
         user_entry.user = self.request.user
+        user_entry.amount = user_entry.amount if user_entry.amount > Money(0, user_entry.amount.currency) else (user_entry.amount * -1)
         user_entry.balance = get_new_user_balance(
             user_entry.amount,
             user_entry.amount.currency,
             self.kwargs.get('user_target_id'),
         )
+        user_entry.entry_type = EntryType.objects.get(title='Gasto')
         user_entry.save()
-        response = super(UserEntryCreate, self).form_valid(form)
+        response = super(UserEntryCreateDebt, self).form_valid(form)
+        return response
+
+
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class UserEntryCreatePayment(CreateView):
+    model = UserEntry
+    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+
+    def form_valid(self, form):
+        user_entry = form.save(commit=False)
+        user_entry.target_user = User.objects.get(pk=self.kwargs.get('user_target_id'))
+        user_entry.user = self.request.user
+        user_entry.amount = user_entry.amount if user_entry.amount < Money(0, user_entry.amount.currency) else (user_entry.amount * -1)
+        user_entry.balance = get_new_user_balance(
+            user_entry.amount,
+            user_entry.amount.currency,
+            self.kwargs.get('user_target_id'),
+        )
+        user_entry.entry_type = EntryType.objects.get(title='Pago')
+        user_entry.save()
+        response = super(UserEntryCreatePayment, self).form_valid(form)
         return response
 
 

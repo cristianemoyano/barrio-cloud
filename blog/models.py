@@ -26,7 +26,7 @@ class Category(TimestampleModel):
         return reverse('blog:blog-view-category', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify('{title}-{id}'.format(title=self.title, id=self.pk))
         super(Category, self).save(*args, **kwargs)
 
     class Meta:
@@ -44,7 +44,7 @@ class Group(TimestampleModel):
         return reverse('blog:blog-view-group', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify('{title}-{id}'.format(title=self.title, id=self.pk))
         super(Group, self).save(*args, **kwargs)
 
     class Meta:
@@ -70,7 +70,7 @@ class Blog(TimestampleModel):
         return reverse('blog:blog-view-post', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify('{title}-{id}'.format(title=self.title, id=self.pk))
         super(Blog, self).save(*args, **kwargs)
 
     class Meta:

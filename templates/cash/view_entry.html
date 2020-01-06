@@ -12,6 +12,7 @@
 		<ul class="post-meta">
 			<li>{{ entry.user }}</li>
 			<li>{{ entry.created_date }}</li>
+			<li>{{ entry.entry_type }}</li>
 			{% if request.user.is_staff %}
 			<li><a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'cash:cash-entry-revert' entry.slug %}">Revert</a></li>
 			{% endif %}

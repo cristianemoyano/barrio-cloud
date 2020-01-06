@@ -26,7 +26,7 @@ class EntryType(TimestampleModel):
         return reverse('cash:cash-view-entry-type', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify('{title}-{id}'.format(title=self.title, id=self.pk))
         super(EntryType, self).save(*args, **kwargs)
 
     class Meta:
@@ -50,7 +50,7 @@ class Entry(TimestampleModel):
         return reverse('cash:cash-view-entry', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.detail)
+        self.slug = slugify('{title}-{id}'.format(title=self.detail, id=self.pk))
         super(Entry, self).save(*args, **kwargs)
 
     class Meta:
@@ -75,7 +75,7 @@ class UserEntry(TimestampleModel):
         return reverse('cash:cash-view-user-entry', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.detail)
+        self.slug = slugify('{title}-{id}'.format(title=self.detail, id=self.pk))
         super(UserEntry, self).save(*args, **kwargs)
 
     class Meta:

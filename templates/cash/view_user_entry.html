@@ -9,6 +9,7 @@
 	<div class="post post-sm">
 	<div class="post-body">
 		<h1 class=""><a href="{{ entry.get_absolute_url }}">{{ entry.detail }}</a></h1>
+		<a class="btn btn-sm btn-secondary" href="{% url 'cash:cash-user-account' entry.target_user.id %}" role="button">{{ entry.target_user }}</a>
 		<ul class="post-meta">
 			<li>{{ entry.user }}</li>
 			<li>{{ entry.created_date }}</li>

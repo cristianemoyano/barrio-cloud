@@ -3,13 +3,31 @@
 {% load i18n %} 
 {% load widget_tweaks %}
 
-{% block title %}New post{% endblock %}
-{% block section %}New post{% endblock %}
+{% block title %}
+  {% if request.resolver_match.url_name == 'cash-user-entry-new-payment' %}
+    New Payment
+  {% else %}
+    New Debt
+  {% endif %}
+{% endblock %}
+{% block section %}
+  {% if request.resolver_match.url_name == 'cash-user-entry-new-payment' %}
+    New Payment
+  {% else %}
+    New Debt
+  {% endif %}
+{% endblock %}
 
 {% block content %}
 
 {% trans "Guardar" as save %}
-
+<h1>
+    {% if request.resolver_match.url_name == 'cash-user-entry-new-payment' %}
+    Nuevo Pago
+  {% else %}
+    Nuevo Gasto
+  {% endif %}
+</h1>
 <form method="post" novalidate>
   {% csrf_token %}
 
@@ -40,12 +58,6 @@
     <div class="col-md-12 blog-main">
 
       <div class="blog-post">
-        {{ form.entry_type.label_tag }}
-        <span class="text-danger">{{ form.entry_type.errors }} </span>
-        <h2 class="blog-post-title">    
-        {{ form.entry_type}}
-        </h2>
-
         {{ form.detail.label_tag }}
         <span class="text-danger">{{ form.detail.errors }} </span>
         <h2 class="blog-post-title">    
