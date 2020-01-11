@@ -63,6 +63,7 @@
             <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Cambiar contraseña</a>
               <!-- STAFF -->
               {% if request.user.is_staff %}
+                <a class="dropdown-item" href="{% url 'admin:index' %}">Ir a Admin</a>
                 <div class="dropdown-divider"></div>
                 <h6 class="dropdown-header text-center">Blog</h6>
                 <a class="dropdown-item" href="{% url 'blog:blog-post-new' %}">Nuevo artículo</a>

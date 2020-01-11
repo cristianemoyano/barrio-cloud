@@ -29,12 +29,12 @@ class BlogView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all().annotate(
-            posts_count=Count('blog', filter=Q(blog__is_published=True)),
+            posts_count=Count('blog', filter=Q(blog__is_published=1)),
         )
         context['groups'] = Group.objects.all().annotate(
-            posts_count=Count('blog', filter=Q(blog__is_published=True)),
+            posts_count=Count('blog', filter=Q(blog__is_published=1)),
         )
-        context['posts_draft_count'] = len(Blog.objects.filter(is_published=False))
+        context['posts_draft_count'] = len(Blog.objects.filter(is_published=0))
         context['image_default'] = (
             'https://www.gumtree.com/static/1/resources/assets/rwd/images/orphans/a37b37d99e7cef805f354d47.noimage_thumbnail.png'
         )
@@ -42,9 +42,9 @@ class BlogView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('draft')
-        result = Blog.objects.filter(is_published=True)
+        result = Blog.objects.filter(is_published=1)
         if query == '1' and self.request.user.is_staff:
-            result = Blog.objects.filter(is_published=False)
+            result = Blog.objects.filter(is_published=0)
         return result
 
 

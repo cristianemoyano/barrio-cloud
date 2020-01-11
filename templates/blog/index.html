@@ -27,8 +27,35 @@
   <div class="row">
 
   
-    <div class="col-md-8 blog-main">
-          
+    <div class="col-md-8 blog-main p-4">
+        {% if posts %}  
+          {% for post in posts %}    
+          <!-- POST -->
+          <div class="col-md-12">
+            <div class="post">
+              {% if post.image_url %}
+              <a class="post-img" href="{{ post.get_absolute_url }}"><img src="{{ post.image_url }}" alt="{{ post.title }}"></a>
+              {% endif %}
+              <div class="post-body">
+                <div class="post-category">
+                  {% for group in post.groups.all %} 
+                    <a href="{{ group.get_absolute_url }}">{{ group.title }}</a>
+                  {% endfor %}
+                </div>
+                <h3 class="post-title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                  <ul class="post-meta">
+                  <li><a href="#">{{ post.author }}</a></li>
+                  <li>{{ post.posted }}</li>
+                  <li><a href="{{ post.category.get_absolute_url }}">{{ post.category }}</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <!-- END POST -->
+          {% else %}
+          <p>{{ no_posts_message }}</p>
+          {% endif %}
 
         <!-- Pagination -->
         <div class="d-flex justify-content-center mb-3">
