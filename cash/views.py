@@ -32,6 +32,26 @@ def get_new_balance(new_amount, currency):
     return balance
 
 
+def get_balance_status(balance):
+    zero = Money(0, balance.currency)
+    if balance < zero:
+        status = {
+            'text': 'DEUDA',
+            'style': 'danger',
+        }
+    elif balance == zero:
+        status = {
+            'text': 'SIN FONDOS',
+            'style': 'warning',
+        }
+    else:
+        status = {
+            'text': 'SUPERÁVIT',
+            'style': 'success',
+        }
+    return status
+
+
 @method_decorator(login_required, name='dispatch')
 class EntryListView(ListView):
     template_name = 'cash/index.html'
@@ -42,7 +62,10 @@ class EntryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['balance'] = get_new_balance(0, 'ARS')
+        balance = get_new_balance(0, 'ARS')
+        balance_status = get_balance_status(balance)
+        context['balance_status'] = balance_status
+        context['balance'] = balance
         return context
 
 
@@ -57,16 +80,41 @@ def entry_detail_view(request, slug):
 
 @method_decorator(staff_member_required, name='dispatch')
 @method_decorator(login_required, name='dispatch')
-class EntryCreate(CreateView):
+class EntryCreateDebt(CreateView):
     model = Entry
-    fields = ['detail', 'amount', 'entry_type', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'attached_file_url', 'notes']
 
     def form_valid(self, form):
         entry = form.save(commit=False)
         entry.user = self.request.user
-        entry.balance = get_new_balance(entry.amount, entry.amount.currency)
+        entry.amount = entry.amount if entry.amount < Money(0, entry.amount.currency) else (entry.amount * -1)
+        entry.balance = get_new_balance(
+            entry.amount,
+            entry.amount.currency,
+        )
+        entry.entry_type = EntryType.objects.get(title='Gasto')
         entry.save()
-        response = super(EntryCreate, self).form_valid(form)
+        response = super(EntryCreateDebt, self).form_valid(form)
+        return response
+
+
+@method_decorator(staff_member_required, name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class EntryCreatePayment(CreateView):
+    model = Entry
+    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+
+    def form_valid(self, form):
+        entry = form.save(commit=False)
+        entry.user = self.request.user
+        entry.amount = entry.amount if entry.amount > Money(0, entry.amount.currency) else (entry.amount * -1)
+        entry.balance = get_new_balance(
+            entry.amount,
+            entry.amount.currency,
+        )
+        entry.entry_type = EntryType.objects.get(title='Pago')
+        entry.save()
+        response = super(EntryCreatePayment, self).form_valid(form)
         return response
 
 
@@ -118,6 +166,26 @@ def get_new_user_balance(new_amount, currency, target_user_id):
     return balance
 
 
+def get_user_balance_status(balance):
+    zero = Money(0, balance.currency)
+    if balance > zero:
+        status = {
+            'text': 'A PAGAR',
+            'style': 'warning',
+        }
+    elif balance == zero:
+        status = {
+            'text': 'AL DÍA',
+            'style': 'success',
+        }
+    else:
+        status = {
+            'text': 'A FAVOR',
+            'style': 'info',
+        }
+    return status
+
+
 @method_decorator(login_required, name='dispatch')
 class UserEntryListView(ListView):
     template_name = 'cash/user_index.html'
@@ -128,16 +196,18 @@ class UserEntryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['balance'] = get_new_user_balance(0, 'ARS', self.kwargs.get('user_target_id'))
+        user_balance = get_new_user_balance(0, 'ARS', self.kwargs.get('user_target_id'))
+        balance_status = get_user_balance_status(user_balance)
+        context['balance'] = user_balance
+        context['balance_status'] = balance_status
         context['member'] = User.objects.get(pk=self.kwargs.get('user_target_id'))
         return context
 
     def get_queryset(self):
         queryset = super(UserEntryListView, self).get_queryset()
-        use_target_id = self.kwargs.get('use_target_id')
-        if use_target_id:
-            queryset = queryset.filter(target_user=use_target_id)
-        return queryset
+        user_target_id = self.kwargs.get('user_target_id')
+        user_entries = queryset.filter(target_user=user_target_id)
+        return user_entries
 
 
 @login_required

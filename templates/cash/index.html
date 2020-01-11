@@ -12,9 +12,20 @@
 
 <div class="jumbotron p-4 p-md-5 rounded">
     <h1 class="font-italic text-center">{{ cash_title }}</h1>
-    <h1 class="font-italic text-center">Fondos: {{ balance }}</h1>
+    <h1 class="font-italic text-center">Fondos: {{ balance }} <span class="badge badge-{{ balance_status.style }}">{{ balance_status.text }}</span></h1>
 </div>
 
+
+{% if request.user.is_staff %}      
+<div class="p-4">
+  <a class="btn btn-success" href="{% url 'cash:cash-entry-new-payment' %}" role="button">
+    Ingresar Pago
+  </a>
+  <a class="btn btn-secondary" href="{% url 'cash:cash-entry-new-debt' %}" role="button">
+    Ingresar Gasto
+  </a>
+</div>
+{% endif %}
 
 <main role="main">
   <div class="row">

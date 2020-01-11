@@ -6,7 +6,8 @@ app_name = 'cash'
 urlpatterns = [
     path('', cash_views.EntryListView.as_view(), name='cash-index'),
     path('entry/<slug:slug>/', cash_views.entry_detail_view, name='cash-view-entry'),
-    path('new/', cash_views.EntryCreate.as_view(), name='cash-entry-new'),
+    path('entry/new/payment/', cash_views.EntryCreatePayment.as_view(), name='cash-entry-new-payment'),
+    path('entry/new/debt/', cash_views.EntryCreateDebt.as_view(), name='cash-entry-new-debt'),
     path('revert/<slug:slug>/', cash_views.RevertEntryView.as_view(), name='cash-entry-revert'),
     # User entries
     path('user_entry/<int:user_target_id>/', cash_views.UserEntryListView.as_view(), name='cash-user-account'),

@@ -59,21 +59,24 @@
           <!-- AUTH -->
           {% if user.is_authenticated %}
             <h6 class="dropdown-header text-center">{{ user }}</h6>
-            <a class="dropdown-item" href="{% url 'accounts:user-profile' %}">Profile</a>
-            <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Change password</a>
+            <a class="dropdown-item" href="{% url 'accounts:user-profile' %}">Perfil</a>
+            <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Cambiar contraseña</a>
               <!-- STAFF -->
               {% if request.user.is_staff %}
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'blog:blog-post-new' %}">New post</a>
+                <h6 class="dropdown-header text-center">Blog</h6>
+                <a class="dropdown-item" href="{% url 'blog:blog-post-new' %}">Nuevo artículo</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'cash:cash-entry-new' %}">New entry</a>
+                <h6 class="dropdown-header text-center">Caja</h6>
+                <a class="dropdown-item" href="{% url 'cash:cash-entry-new-debt' %}">Nuevo gasto</a>
+                <a class="dropdown-item" href="{% url 'cash:cash-entry-new-payment' %}">Nuevo pago</a>
               {% endif %}
               <!-- END STAFF -->
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Cerrar sesión</a>
           {% else %}
           <!-- END AUTH -->
-            <a class="dropdown-item" href="{% url 'accounts:login' %}">Login</a>
+            <a class="dropdown-item" href="{% url 'accounts:login' %}">Iniciar Sesión</a>
           {% endif %}
         </div>
       </li>
