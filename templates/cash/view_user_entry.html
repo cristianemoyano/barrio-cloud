@@ -3,6 +3,8 @@
 {% block title %}Blog{% endblock %}
 {% block section %}Post{% endblock %}
 
+{% load cash_extras %}
+
 {% block content %}
 
 <div class="col-md-4">
@@ -19,11 +21,16 @@
 		</ul>
 	</div>
 	</div>
+	{% if entry.attached_file_url %}
+		<p class="btn btn-warning text-white"><a href="{{ entry.attached_file_url }} ">Descargar Comprobante</a></p>
+		<p class="btn btn-info text-white"><a target="blank" href="{{ entry.attached_file_url|cut:'?dl=1' }} ">Ver Comprobante</a></p>
+	{% endif %}
 </div>
 
    <img class="card-img-top"  style="max-width:50%;height:auto;" src="{{ post.image_url }}" alt={{ post.title }}>
    <p class="display-2">{{ entry.amount }}</p>
-   <p class="display-2">{{ entry.balance }}</p>  
+   <p class="display-2">{{ entry.balance }}</p>
+
 	
 
 {% endblock %}

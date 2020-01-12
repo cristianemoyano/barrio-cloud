@@ -14,6 +14,13 @@ import os
 
 from django.utils.translation import gettext_lazy as _
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+DROPBOX_ACCESS_TOKEN = os.getenv('DROPBOX_ACCESS_TOKEN')
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'yj9%_n4#jesbb00_u94g6q@0mjsz1l+w9q0!re^jhk8yd2=j+v'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -141,6 +148,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_media/')
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 # Login

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Cash{% endblock %}
+{% block section %}Revert{% endblock %}
+
+{% block content %}
+
+<div class="col-md-4">
+	<div class="post post-sm">
+	<div class="post-body">
+		<h1 class=""><a href="{{ entry.get_absolute_url }}">
+		Está seguro que quiere revertir la operación: #{{ entry.pk }} ?
+		<br>
+		{{ entry.detail }}
+		</a></h1>
+		<ul class="post-meta">
+			<li>{{ entry.user }}</li>
+			<li>{{ entry.created_date }}</li>
+		</ul>
+	</div>
+	</div>
+</div>
+
+   <img class="card-img-top"  style="max-width:50%;height:auto;" src="{{ post.image_url }}" alt={{ post.title }}>
+   <p class="display-2">{{ entry.amount }}</p>
+   <p class="display-2">{{ entry.balance }}</p>
+
+	  <form method="post">
+	    {% csrf_token %}
+	    <input type="hidden" id="id_pk" name="pk" value="{{ entry.pk }}">
+	    <button class="btn btn-outline-primary text-uppercase" type="submit">Revertir</button>
+	</form>
+	
+
+{% endblock %}

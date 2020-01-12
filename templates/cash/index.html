@@ -42,9 +42,7 @@
               <th style="width: 35%">Detail</th>
               <th style="width: 15%">Amount</th>
               <th style="width: 15%">Balance</th>
-              {% if request.user.is_staff %}
               <th style="width: 5%">Actions</th>
-              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -55,9 +53,14 @@
               <td><a href="{{ entry.get_absolute_url }}"> {{ entry.detail }}</a></td>
               <td>{{ entry.amount }}</td>
               <td>{{ entry.balance }}</td>
-              {% if request.user.is_staff %}
-              <td><a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'cash:cash-entry-revert' entry.slug %}">Revert</a></td>
-              {% endif %}
+              
+              <td>
+                {% if request.user.is_staff %}
+                <a class="btn btn-sm btn-danger" style="color: white;" href="{% url 'cash:cash-entry-revert' entry.slug %}">Revertir</a>
+                {% endif %}
+                <a class="btn btn-sm btn-info" style="color: white;" href="{{ entry.get_absolute_url }}">Ver</a>
+              </td>
+              
             </tr>
         {% endfor %}
         </tbody>

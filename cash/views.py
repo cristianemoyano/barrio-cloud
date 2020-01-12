@@ -18,6 +18,8 @@ from django.utils.decorators import method_decorator
 
 from djmoney.money import Money
 
+from common.upload import upload_file
+
 
 def get_new_balance(new_amount, currency):
     try:
@@ -72,22 +74,33 @@ class EntryListView(ListView):
 @login_required
 def entry_detail_view(request, slug):
     try:
-        p = Entry.objects.get(slug=slug)
+        entry = Entry.objects.get(slug=slug)
     except Entry.DoesNotExist:
         raise Http404("Entry does not exist")
-    return render(request, 'cash/view_entry.html', {'entry': p})
+    return render(request, 'cash/view_entry.html', {'entry': entry})
+
+
+def get_entry_amount(amount, currency, entry_type):
+    zero = Money(0, currency)
+    if entry_type == 'GASTO':
+        return amount if amount < zero else (amount * -1)
+    elif entry_type == 'PAGO':
+        return amount if amount > zero else (amount * -1)
+    raise Exception('Entry type not supported')
 
 
 @method_decorator(staff_member_required, name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class EntryCreateDebt(CreateView):
     model = Entry
-    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'notes']
 
     def form_valid(self, form):
         entry = form.save(commit=False)
+        links = upload_file(self.request, 'attached_file')
+        entry.attached_file_url = links['dropbox']
         entry.user = self.request.user
-        entry.amount = entry.amount if entry.amount < Money(0, entry.amount.currency) else (entry.amount * -1)
+        entry.amount = get_entry_amount(entry.amount, entry.amount.currency, 'GASTO')
         entry.balance = get_new_balance(
             entry.amount,
             entry.amount.currency,
@@ -102,12 +115,14 @@ class EntryCreateDebt(CreateView):
 @method_decorator(login_required, name='dispatch')
 class EntryCreatePayment(CreateView):
     model = Entry
-    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'notes']
 
     def form_valid(self, form):
         entry = form.save(commit=False)
+        links = upload_file(self.request, 'attached_file')
+        entry.attached_file_url = links['dropbox']
         entry.user = self.request.user
-        entry.amount = entry.amount if entry.amount > Money(0, entry.amount.currency) else (entry.amount * -1)
+        entry.amount = get_entry_amount(entry.amount, entry.amount.currency, 'PAGO')
         entry.balance = get_new_balance(
             entry.amount,
             entry.amount.currency,
@@ -164,6 +179,15 @@ def get_new_user_balance(new_amount, currency, target_user_id):
     else:
         balance += new_amount
     return balance
+
+
+def get_user_entry_amount(amount, currency, entry_type):
+    zero = Money(0, currency)
+    if entry_type == 'GASTO':
+        return amount if amount > zero else (amount * -1)
+    elif entry_type == 'PAGO':
+        return amount if amount < zero else (amount * -1)
+    raise Exception('Entry type not supported')
 
 
 def get_user_balance_status(balance):
@@ -223,13 +247,15 @@ def user_entry_detail_view(request, slug):
 @method_decorator(login_required, name='dispatch')
 class UserEntryCreateDebt(CreateView):
     model = UserEntry
-    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'notes']
 
     def form_valid(self, form):
         user_entry = form.save(commit=False)
+        links = upload_file(self.request, 'attached_file')
+        user_entry.attached_file_url = links['dropbox']
         user_entry.target_user = User.objects.get(pk=self.kwargs.get('user_target_id'))
         user_entry.user = self.request.user
-        user_entry.amount = user_entry.amount if user_entry.amount > Money(0, user_entry.amount.currency) else (user_entry.amount * -1)
+        user_entry.amount = get_user_entry_amount(user_entry.amount, user_entry.amount.currency, 'GASTO')
         user_entry.balance = get_new_user_balance(
             user_entry.amount,
             user_entry.amount.currency,
@@ -245,13 +271,15 @@ class UserEntryCreateDebt(CreateView):
 @method_decorator(login_required, name='dispatch')
 class UserEntryCreatePayment(CreateView):
     model = UserEntry
-    fields = ['detail', 'amount', 'attached_file_url', 'notes']
+    fields = ['detail', 'amount', 'notes']
 
     def form_valid(self, form):
         user_entry = form.save(commit=False)
+        links = upload_file(self.request, 'attached_file')
+        user_entry.attached_file_url = links['dropbox']
         user_entry.target_user = User.objects.get(pk=self.kwargs.get('user_target_id'))
         user_entry.user = self.request.user
-        user_entry.amount = user_entry.amount if user_entry.amount < Money(0, user_entry.amount.currency) else (user_entry.amount * -1)
+        user_entry.amount = get_user_entry_amount(user_entry.amount, user_entry.amount.currency, 'PAGO')
         user_entry.balance = get_new_user_balance(
             user_entry.amount,
             user_entry.amount.currency,
@@ -286,12 +314,18 @@ class RevertUserEntryView(View):
         if form.is_valid():
             detail = 'reverted-({})'.format(entry_to_revert.detail)
             reverted_amount = entry_to_revert.amount * (-1)
-            balance = get_new_user_balance(reverted_amount, entry_to_revert.amount.currency)
+            balance = get_new_user_balance(
+                reverted_amount,
+                entry_to_revert.amount.currency,
+                entry_to_revert.target_user.id,
+            )
             reverted_entry = UserEntry.objects.create(
                 detail=detail,
                 amount=reverted_amount,
                 balance=balance,
                 user=self.request.user,
+                entry_type=entry_to_revert.entry_type,
+                target_user=entry_to_revert.target_user,
             )
             reverted_entry.save()
-            return HttpResponseRedirect(reverse_lazy('cash:cash-user-index'))
+            return HttpResponseRedirect(reverse_lazy('cash:cash-user-account', args=[entry_to_revert.target_user.id]))

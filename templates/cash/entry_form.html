@@ -10,7 +10,7 @@
 
 {% trans "Guardar" as save %}
 
-<form method="post" novalidate>
+<form role="form" method="post" enctype="multipart/form-data">
   {% csrf_token %}
 
   {% if form.non_field_errors %}
@@ -64,11 +64,7 @@
         {{ form.notes}}
         </h2>
 
-        {{ form.attached_file_url.label_tag }}
-        <span class="text-danger">{{ form.attached_file_url.errors }} </span>
-        <h2 class="blog-post-title">    
-        {{ form.attached_file_url}}
-        </h2>
+        <input type="file" name="attached_file" class="p-4">
 
 
 
