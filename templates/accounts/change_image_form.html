@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Account{% endblock %}
+{% block section %}Profile{% endblock %}
+
+{% block content %}
+
+<div class="col-md-4">
+  <div class="post post-sm">
+  <div class="post-body">
+    <h1 class="">Imagen de Perfil</h1>
+  </div>
+  </div>
+</div>
+
+
+  <form role="form" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="attached_file" class="p-4">
+      <button class="btn btn-outline-primary text-uppercase" type="submit">Asignar Foto</button>
+  </form>
+  
+
+{% endblock %}

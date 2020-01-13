@@ -7,15 +7,22 @@
 
 
   <h2>Profile</h2>
-    
-	{% if user.is_superuser %}
+    <img class="img-thumbnail" width="300" src="{{ user.profile.image_url }}" alt="Imagen de Perfil">
+  	{% if user.is_superuser %}
     <p>Hello, admin: {{ user }}</p>
     <li><a href="{% url 'admin:index' %}">Admin</a></li>
     <li>{{ user.email }}</li>
-{% else %}
-    <p>Hello, visitor: {{ user }}</p>
-{% endif %}
-
+	{% else %}
+	    <p>Hello, visitor: {{ user }}</p>
+	{% endif %}
+    <p>Nacimiento: {{ user.profile.birthdate }}</p>
+    Lotes:
+    {% for lote in user.profile.lote.all %}
+    <li>Lote: {{ lote }}</li>
+    {% endfor %}
+    <p>Teléfono: {{ user.profile.telephone }}</p>
+    <p>DNI: {{ user.profile.dni }}</p>
+    
 
     <li><a href="{% url 'accounts:user-profile' %}">Profile</a></li>
     <li><a href="{% url 'accounts:logout' %}">Logout</a>

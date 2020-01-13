@@ -17,7 +17,7 @@ urlpatterns = [
         name='password_change'
     ),
     path('', include('django.contrib.auth.urls')),
-
     path('profile/', accounts_views.profile, name='user-profile'),
+    path('profile/image_change/', accounts_views.ChangeImageProfileView.as_view(), name='user-image-change'),
     path('detail/<int:pk>/', accounts_views.account, name='user-account'),
 ]
