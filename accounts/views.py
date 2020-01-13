@@ -7,6 +7,7 @@ from django.views import View
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.views.generic.edit import UpdateView
 
 from django.contrib.auth.models import User
 from .models import Profile
@@ -47,3 +48,12 @@ class ChangeImageProfileView(View):
         profile.image_url = links['dropbox']
         profile.save()
         return HttpResponseRedirect(reverse_lazy('accounts:user-profile'))
+
+
+class ProfileUpdate(UpdateView):
+    model = Profile
+    fields = ['first_name', 'last_name', 'birthdate', 'lote', 'telephone', 'dni', 'email']
+
+    def get_object(self):
+        queryset = super(ProfileUpdate, self).get_queryset()
+        return queryset.filter(user=self.request.user).first()

@@ -45,6 +45,8 @@ class Profile(TimestampleModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
 
+    first_name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255, blank=True)
     birthdate = models.DateField(null=True, blank=True)
     lote = models.ManyToManyField(Lote, blank=True)
     telephone = models.CharField(max_length=30, blank=True)
@@ -54,6 +56,9 @@ class Profile(TimestampleModel):
 
     def __str__(self):
         return self.user.username
+
+    def get_absolute_url(self):
+        return reverse('accounts:user-profile')
 
 
 @receiver(post_save, sender=User)

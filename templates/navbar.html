@@ -61,6 +61,7 @@
             <h6 class="dropdown-header text-center">{{ user }}</h6>
             <a class="dropdown-item" href="{% url 'accounts:user-profile' %}">Perfil</a>
             <a class="dropdown-item" href="{% url 'accounts:password_change' %}">Cambiar contraseña</a>
+            <a class="dropdown-item" href="{% url 'accounts:user-image-change' %}">Cambiar imagen de perfil</a>
               <!-- STAFF -->
               {% if request.user.is_staff %}
                 <a class="dropdown-item" href="{% url 'admin:index' %}">Ir a Admin</a>

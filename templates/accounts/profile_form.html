@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Account{% endblock %}
+{% block section %}Profile{% endblock %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="col-md-4">
+  <div class="post post-sm">
+  <div class="post-body">
+    <h1 class="">Actualizar Perfil</h1>
+  </div>
+  </div>
+</div>
+
+
+  <form role="form" method="post" class="p-4" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <div class="blog-post">
+        {{ form.first_name.label_tag }}
+        <span class="text-danger">{{ form.first_name.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.first_name|add_class:'form-control' }}
+        </h2>
+      </div>
+
+      <div class="blog-post">
+        {{ form.last_name.label_tag }}
+        <span class="text-danger">{{ form.last_name.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.last_name|add_class:'form-control' }}
+        </h2>
+      </div>
+
+
+      <div class="blog-post">
+        {{ form.birthdate.label_tag }}
+        <span class="text-danger">{{ form.birthdate.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.birthdate|add_class:'form-control' }}
+        </h2>
+      </div>
+
+       <div class="blog-post">
+        {{ form.lote.label_tag }}
+        <span class="text-danger">{{ form.lote.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.lote|add_class:'form-control' }}
+        </h2>
+      </div>
+
+            <div class="blog-post">
+        {{ form.telephone.label_tag }}
+        <span class="text-danger">{{ form.telephone.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.telephone|add_class:'form-control' }}
+        </h2>
+      </div>
+
+        <div class="blog-post">
+        {{ form.dni.label_tag }}
+        <span class="text-danger">{{ form.dni.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.dni|add_class:'form-control' }}
+        </h2>
+      </div>
+
+        <div class="blog-post">
+        {{ form.email.label_tag }}
+        <span class="text-danger">{{ form.email.errors }} </span>
+        <h2 class="blog-post-title">    
+        {{ form.email|add_class:'form-control' }}
+        </h2>
+      </div>
+
+  <button class="btn btn-outline-primary text-uppercase" type="submit">Actualizar</button>
+
+  </form>
+  
+
+{% endblock %}

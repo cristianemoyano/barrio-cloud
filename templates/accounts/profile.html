@@ -7,24 +7,95 @@
 
 
   <h2>Profile</h2>
-    <img class="img-thumbnail" width="300" src="{{ user.profile.image_url }}" alt="Imagen de Perfil">
-  	{% if user.is_superuser %}
-    <p>Hello, admin: {{ user }}</p>
-    <li><a href="{% url 'admin:index' %}">Admin</a></li>
-    <li>{{ user.email }}</li>
-	{% else %}
-	    <p>Hello, visitor: {{ user }}</p>
-	{% endif %}
-    <p>Nacimiento: {{ user.profile.birthdate }}</p>
-    Lotes:
-    {% for lote in user.profile.lote.all %}
-    <li>Lote: {{ lote }}</li>
-    {% endfor %}
-    <p>Teléfono: {{ user.profile.telephone }}</p>
-    <p>DNI: {{ user.profile.dni }}</p>
-    
 
-    <li><a href="{% url 'accounts:user-profile' %}">Profile</a></li>
-    <li><a href="{% url 'accounts:logout' %}">Logout</a>
+<div class="container bootstrap snippet">
+
+    <div class="row">
+        <div class="col-sm-3"><!--left col-->
+              
+
+      <div class="text-center">
+
+        {% if user.profile.image_url %}
+            <img class="img-thumbnail" width="300" src="{{ user.profile.image_url }}" alt="Imagen de Perfil">
+        {% else %}
+            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+        {% endif %}
+
+        <h6><a class="btn btn-info" href="{% url 'accounts:user-image-change' %}">Cambiar foto</a> </h6>
+
+      </div></hr><br>
+
+          
+        </div><!--/col-3-->
+        <div class="col-sm-9">
+ 
+
+              <h6><a class="btn btn-info" href="{% url 'accounts:user-profile-update' %}">Actualizar Perfil</a> </h6>
+          <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <hr>
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                              <label for="first_name"><h4>First name</h4></label>
+                              {{ user.profile.first_name }}
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                            <label for="last_name"><h4>Last name</h4></label>
+                              {{ user.profile.last_name }}
+                          </div>
+                      </div>
+          
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="phone"><h4>Phone</h4></label>
+                              {{ user.profile.telephone }}
+                          </div>
+                      </div>
+          
+                      <div class="form-group">
+                          <div class="col-xs-6">
+                             <label for="mobile"><h4>DNI</h4></label>
+                                {{ user.profile.dni }}
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Email</h4></label>
+                              {% if user.profile.email %}
+                                {{ user.profile.email }}
+                              {% else %}
+                                {{ user.email }}
+                              {% endif %}
+                          </div>
+                      </div>
+                      <div class="form-group">
+                          
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Nacimiento</h4></label>
+                              {{ user.profile.birthdate }}
+                          </div>
+                      </div>
+                        <div class="form-group">  
+                          <div class="col-xs-6">
+                              <label for="email"><h4>Lotes</h4></label>
+                              {% if user.profile.lote.all %}
+                                {% for lote in user.profile.lote.all %}
+                                    <li>{{ lote }}</li>
+                                {% endfor %}
+                              {% endif %}
+                          </div>
+                      </div>
+              <hr>
+             </div><!--/tab-pane-->
+          </div><!--/tab-content-->
+
+        </div><!--/col-9-->
+    </div><!--/row-->
 
 {% endblock %}
