@@ -29,11 +29,9 @@
   <div class="col-md-4">
     <a href="{% url 'cash:cash-user-account' member.id %}">
       <div class="card text-center" style="width: 14rem;">
-        {% if member.profile.image_url %}
-        <img class="card-img-top" src="{{ user.profile.image_url }}" alt="Card image cap">
-        {% else %} 
-        <img class="card-img-top" src="http://otca.info/gef/dist/images/no-image.png" alt="Card image cap">
-        {% endif %}
+
+        <!-- <img class="card-img-top" src="{{ user.profile.image_url }}" alt="Card image cap"> -->
+
         <div class="card-body">
           {% if member.first_name %} 
           <h5 class="card-title"> {{ member.first_name }} {{ member.last_name }}</h5>
